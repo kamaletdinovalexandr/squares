@@ -1,27 +1,86 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.UIElements;
 using UnityEngine;
 
 public class SquareController : MonoBehaviour {
+
+	private float _fieldSize;
+	private float _squareSize;
 	
-	[SerializeField] FieldManager _fieldManager;
-	private readonly Vector2 _fieldSize = new Vector2(500f, 500f);
-	private readonly float SquareSize = 250;
-    private List<Square> _squares;
-    private int _minimalSize;
-    private SquareStratcher _squareStratcher;
-	private RandomPicker _picker = new RandomPicker();
-	private Vector2 _offset;
+	[SerializeField] 
+	private FieldManager _fieldManager;
+	private SquareStratcher _squareStretcher;
+    private List<Square> _squares = new List<Square>();
+	private Square _currentSquare;
 
 	private void Start() {
-		_offset = new Vector2(SquareSize / 4, -1 * SquareSize / 4);
-		_fieldManager.SpawnAt(Vector2.zero , _offset ,_picker.GetColor());
-		_fieldManager.SpawnAt(Vector2.right, _offset, _picker.GetColor());
-		_fieldManager.SpawnAt(Vector2.down, _offset, _picker.GetColor());
-		_fieldManager.SpawnAt(Vector2.right + Vector2.down, _offset, _picker.GetColor());
+		_fieldSize = 500f;
+		_squareSize = _fieldSize / 4f;
+		MakeSquare();	
 	}
 
-	internal void MakeSquare(Vector2 pos) { }
-    internal void TryStratch(Vector2 dir) { }
-    internal bool IsPlacingAvailable() { return true; }
+	private void Update() {
+		if (Input.GetKeyDown((KeyCode.DownArrow)))
+			StretchCurrentSquare(Vector2.down);
+		
+		if (Input.GetKeyDown((KeyCode.UpArrow)))
+			StretchCurrentSquare(Vector2.up);
+		
+		if (Input.GetKeyDown((KeyCode.LeftArrow)))
+			StretchCurrentSquare(Vector2.left);
+		
+		if (Input.GetKeyDown((KeyCode.RightArrow)))
+			StretchCurrentSquare(Vector2.right);
+	}
+
+	private void MakeSquare() {
+		var position = RandomPicker.GetPosition(_squareSize, _fieldSize - _squareSize);
+		var cell =_fieldManager.SpawnAt(position, RandomPicker.GetColor());
+		cell.Position = position;
+		cell.Size = new Vector2(_squareSize, _squareSize);
+		_squares.Add((cell));
+		_currentSquare = cell;
+	}
+
+	private void StretchCurrentSquare(Vector2 direction) {
+		foreach (var square in _squares) {
+			if (direction == Vector2.left) {
+				var targetPositionX = 0f;
+				var newWidth = _currentSquare.Position.x + _currentSquare.Size.x;
+				if (
+					square.Position.x + square.Size.x / 2 < _currentSquare.Position.x - _currentSquare.Size.x / 2
+					&& square.Position.y + square.Size.y / 2 < _currentSquare.Position.y + _currentSquare.Size.y / 2
+					&& square.Position.y - square.Size.y / 2 > _currentSquare.Position.y - _currentSquare.Size.y / 2
+					) {
+					Debug.Log("found");
+					var delta = _currentSquare.Position.x - _currentSquare.Size.x / 2 - square.Position.x +
+					            square.Size.x / 2;
+					targetPositionX =  (_currentSquare.Position.x - delta) / 2;
+					newWidth = _currentSquare.Size.x + delta;
+				}
+				
+				_currentSquare.Position.x = targetPositionX;
+				_currentSquare.Size.x = newWidth;
+				
+			}
+			else if (direction == Vector2.right) {
+				var newWidth = _fieldSize - _currentSquare.Position.x + _currentSquare.Size.x;
+				               
+				var targetPosition = _fieldSize - newWidth;	
+				_currentSquare.Position.x = targetPosition;
+				_currentSquare.Size.x = newWidth;
+			}
+
+			else if (direction == Vector2.up) {
+			}
+
+			else if (direction == Vector2.down) {
+			}
+		}
+		_currentSquare.ApplyParameters();
+		MakeSquare();
+	}
+
+	
 }

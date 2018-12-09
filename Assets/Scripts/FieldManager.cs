@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class FieldManager : MonoBehaviour {
 
-	[SerializeField] private GameObject SquareCellPrefab;
-	[SerializeField] private RectTransform Container;
+	[SerializeField] private GameObject _squareCellPrefab;
+	[SerializeField] private RectTransform _container;
 
-	public void SpawnAt(Vector2 position, Vector2 offset, Color color) {
-		var fieldCell = Instantiate(SquareCellPrefab, Container);
-		fieldCell.GetComponent<RectTransform>().localPosition = position + offset;
+	public Square SpawnAt(Vector2 position, Color color) {
+		var fieldCell = Instantiate(_squareCellPrefab, _container);
+		fieldCell.GetComponent<RectTransform>().anchoredPosition = position;
 		fieldCell.GetComponent<Image>().color = color;
+		return fieldCell.GetComponent<Square>();
 	}
 }

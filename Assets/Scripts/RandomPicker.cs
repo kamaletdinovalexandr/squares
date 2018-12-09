@@ -4,13 +4,12 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class RandomPicker {
-	private List<Color> _usedColors = new List<Color>();
-	private int maxIterations = 20;
+	private static List<Color> _usedColors = new List<Color>();
 
-	public Color GetColor() {
+	public static Color GetColor() {
 		Color newColor;
 		do {
-			newColor = new Color(Random.Range(0, 256), Random.Range(0, 256), Random.Range(0, 256));
+			newColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
 		} while (_usedColors.Contains(newColor));
 
 		_usedColors.Add(newColor);
@@ -18,7 +17,10 @@ public class RandomPicker {
 		return newColor;
 	}
 
-	public Vector2 GetPosition() {
-		return Vector2.one;
+	public static Vector2 GetPosition(float startPosition, float endPosition) {
+		var newPosition = new Vector2(Random.Range(startPosition, endPosition),
+			Random.Range(startPosition, endPosition));
+		Debug.Log("Position generated: " + newPosition);
+		return newPosition;
 	}
 }
