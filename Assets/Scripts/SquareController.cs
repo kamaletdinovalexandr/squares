@@ -65,17 +65,20 @@ public class SquareController : MonoBehaviour {
 				
 			}
 			else if (direction == Vector2.right) {
-				var newWidth = _fieldSize - _currentSquare.Position.x + _currentSquare.Size.x;
-				               
-				var targetPosition = _fieldSize - newWidth;	
-				_currentSquare.Position.x = targetPosition;
-				_currentSquare.Size.x = newWidth;
+				var targetWidth = _fieldSize - _currentSquare.Position.x;
+				_currentSquare.Size.x = targetWidth;
 			}
 
 			else if (direction == Vector2.up) {
+				var targetHeight = _fieldSize - _currentSquare.Position.y;
+				_currentSquare.Size.y = targetHeight;
 			}
 
 			else if (direction == Vector2.down) {
+				var targetPositionY = 0f;
+				var newHeight = _currentSquare.Position.y + _currentSquare.Size.y;
+				_currentSquare.Position.y = targetPositionY;
+				_currentSquare.Size.y = newHeight;
 			}
 		}
 		_currentSquare.ApplyParameters();
