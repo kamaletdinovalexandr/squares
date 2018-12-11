@@ -17,9 +17,8 @@ public class RandomPicker {
 		return newColor;
 	}
 
-	public static Vector2 GetPosition(float startPosition, float endPosition) {
-		var newPosition = new Vector2(Random.Range(startPosition, endPosition),
-			Random.Range(startPosition, endPosition));
+	public static Vector2Int GetPosition(int startPosition, int endPosition) {
+		var newPosition = new Vector2Int(Random.Range(startPosition, endPosition), Random.Range(startPosition, endPosition));
 		Debug.Log("Position generated: " + newPosition);
 		return newPosition;
 	}
