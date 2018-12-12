@@ -1,0 +1,1 @@
+﻿public enum GameState { Init, GenerateSquare, SquareSelect, SquareStretch, GameOver }

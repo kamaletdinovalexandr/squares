@@ -1,33 +1,50 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.UIElements;
 using UnityEngine;
 
 public class SquareController : MonoBehaviour {
-	
-	[SerializeField] 
-	private GridManager _gridManager;
-    private List<Square> _squares = new List<Square>();
+
+	[SerializeField] private GameObject _squareCellPrefab;
+	[SerializeField] private GameManager _gameController;
+
+	private List<Square>[,] _squares = new List<Square>[Globals.GridWidth,Globals.GridHeight];
 	private Square _selectedSquare;
 
-	private void Start() {
-		InitBackground();
-	}
-
-	private void InitBackground() {
+	public void InitBoard() {
 		for (int i = 0; i < Globals.GridWidth; i++) {
 			for (int j = 0; j < Globals.GridHeight; j++) {
-				_gridManager.SpawnAt(new Vector2Int(i, j), Globals.BackColor);
+				SpawnAt(new Vector2Int(i, j), Globals.BackColor, false);
 			}
-		}	
+		}
 	}
 
+	public void MakeRandomSquare() {
+		var randomPosition = RandomPicker.GetPosition();
+		var randomColor = RandomPicker.GetColor();
+		SpawnAt(randomPosition, randomColor);
+	}
 
-	private void MakeSquare() {
-		var position = RandomPicker.GetPosition(0, Globals.GridWidth);
-		var color = RandomPicker.GetColor();
-		var cell = new Square(position, color);
-		_squares.Add((cell));
+	public void SpawnAt(Vector2Int position, Color color, bool addToList = true) {
+		var cellView = Instantiate(_squareCellPrefab, GridToWorld(position), Quaternion.identity);
+		var cell = new Square(cellView, position, color);
+		cellView.transform.SetParent(this.transform);
+		if (addToList) {
+			if (_squares[position.x, position.y] == null)
+				_squares[position.x, position.y] = new List<Square>();
+			_squares[position.x, position.y].Add(cell);
+		}
+	}
+
+	public Vector2 GridToWorld(Vector2Int gridPosition) {
+		var gridX = gridPosition.x + gridPosition.x * Globals.Offset;
+		var gridY = gridPosition.y + gridPosition.y * Globals.Offset;
+		return new Vector2(gridX, gridY);
+	}
+
+	public Vector2Int WorldToGrid(Vector2 worldPosition) {
+		var gridX = (int)(worldPosition.x / Globals.Offset - worldPosition.x);
+		var gridY = (int)(worldPosition.y / Globals.Offset - worldPosition.y);
+		return new Vector2Int(gridX, gridY);
 	}
 
 }

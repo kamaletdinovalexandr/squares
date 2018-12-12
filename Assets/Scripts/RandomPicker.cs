@@ -4,7 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class RandomPicker {
-	private static List<Color> _usedColors = new List<Color>();
+	private static List<Color> _usedColors = new List<Color>() { Globals.BackColor };
 
 	public static Color GetColor() {
 		Color newColor;
@@ -17,8 +17,8 @@ public class RandomPicker {
 		return newColor;
 	}
 
-	public static Vector2Int GetPosition(int startPosition, int endPosition) {
-		var newPosition = new Vector2Int(Random.Range(startPosition, endPosition), Random.Range(startPosition, endPosition));
+	public static Vector2Int GetPosition() {
+		var newPosition = new Vector2Int(Random.Range(0, Globals.GridWidth), Random.Range(0, Globals.GridHeight));
 		Debug.Log("Position generated: " + newPosition);
 		return newPosition;
 	}

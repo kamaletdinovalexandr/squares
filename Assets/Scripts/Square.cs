@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Square : MonoBehaviour {
+public class Square {
 
+	public GameObject View { get; private set; }
 	public Vector2Int Position { get; private set; }
+	public Vector2Int Size { get; set; }
 	public Color SquareColor { get; private set; }
-	public int HorizontalSize { get; set; }
-	public int VerticalSize { get; set; }
-	public List<Square> NestedSquares = new List<Square>();
 
-	public Square(Vector2Int position, Color color) {
+	public Square(GameObject view, Vector2Int position, Color color) {
+		View = view;
 		Position = position;
 		SquareColor = color;
 	}
